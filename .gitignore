@@ -65,3 +65,14 @@
 /contrib/apps/LwipMibCompiler/MibViewer/obj
 /contrib/apps/LwipMibCompiler/SharpSnmpLib/bin
 /contrib/apps/LwipMibCompiler/SharpSnmpLib/obj
+
+/subprojects/glib/
+/subprojects/gvdb.wrap
+/subprojects/libffi.wrap
+/subprojects/libffi/
+/subprojects/pcre2.wrap
+/subprojects/pcre2/
+/subprojects/proxy-libintl.wrap
+/subprojects/proxy-libintl/
+/subprojects/zlib.wrap
+/subprojects/zlib/
