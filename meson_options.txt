@@ -1,0 +1,59 @@
+option('lwip_debug',
+  type: 'feature',
+  value: 'auto',
+  description: 'Enable lwIP debug infrastructure',
+)
+
+option('ipv4',
+  type: 'feature',
+  value: 'auto',
+  description: 'Enable IPv4 support',
+)
+
+option('ipv6',
+  type: 'feature',
+  value: 'auto',
+  description: 'Enable IPv6 support',
+)
+
+option('dns',
+  type: 'feature',
+  value: 'auto',
+  description: 'Enable DNS support',
+)
+
+option('arp',
+  type: 'feature',
+  value: 'auto',
+  description: 'Enable ARP support',
+)
+
+option('ethernet',
+  type: 'feature',
+  value: 'auto',
+  description: 'Enable Ethernet support',
+)
+
+option('tcp_mss',
+  type: 'integer',
+  min: 88,
+  max: 16382,
+  value: 1024,
+  description: 'TCP Maximum Segment Size',
+)
+
+option('tcp_snd_buf',
+  type: 'integer',
+  min: 176,
+  max: 65535,
+  value: 2048,
+  description: 'TCP sender buffer space (bytes)',
+)
+
+option('tcp_wnd',
+  type: 'integer',
+  min: 176,
+  max: 65535,
+  value: 20480,
+  description: 'TCP window size',
+)
