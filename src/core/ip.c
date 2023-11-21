@@ -61,7 +61,7 @@
 #include "lwip/ip.h"
 
 /** Global data for both IPv4 and IPv6 */
-struct ip_globals ip_data;
+struct ip_globals ip_data = { NULL, };
 
 #if LWIP_IPV4 && LWIP_IPV6
 
