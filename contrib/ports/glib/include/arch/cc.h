@@ -47,12 +47,6 @@
 #endif
 
 #define LWIP_DONT_PROVIDE_BYTEORDER_FUNCTIONS
-#ifndef htons
-# define htons(x) GUINT16_TO_BE(x)
-# define ntohs(x) GUINT16_FROM_BE(x)
-# define htonl(x) GUINT32_TO_BE(x)
-# define ntohl(x) GUINT32_FROM_BE(x)
-#endif
 
 typedef unsigned int sys_prot_t;
 
