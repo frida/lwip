@@ -110,6 +110,8 @@ thread_wrapper(gpointer data)
 
 #if LWIP_TCPIP_CORE_LOCKING
 
+#ifndef LWIP_NOASSERT
+
 static GThread *lwip_core_lock_holder_thread;
 
 void sys_lock_tcpip_core(void)
@@ -124,7 +126,23 @@ void sys_unlock_tcpip_core(void)
   sys_mutex_unlock(&lock_tcpip_core);
 }
 
+#else
+
+void sys_lock_tcpip_core(void)
+{
+  sys_mutex_lock(&lock_tcpip_core);
+}
+
+void sys_unlock_tcpip_core(void)
+{
+  sys_mutex_unlock(&lock_tcpip_core);
+}
+
 #endif
+
+#endif
+
+#ifndef LWIP_NOASSERT
 
 static GThread *lwip_tcpip_thread;
 
@@ -145,6 +163,18 @@ void sys_check_core_locking(void)
 #endif /* LWIP_TCPIP_CORE_LOCKING */
   }
 }
+
+#else
+
+void sys_mark_tcpip_thread(void)
+{
+}
+
+void sys_check_core_locking(void)
+{
+}
+
+#endif
 
 err_t
 sys_mbox_new(struct sys_mbox **mb, int size)
