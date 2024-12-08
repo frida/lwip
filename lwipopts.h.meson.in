@@ -62,6 +62,10 @@
 #mesondefine TCP_MSS
 #mesondefine TCP_SND_BUF
 #mesondefine TCP_WND
+#define LWIP_WND_SCALE          1
+#define TCP_RCV_SCALE           7
+#define LWIP_TCP_TIMESTAMPS     1
+#define LWIP_TCP_SACK_OUT       1
 #define TCP_LISTEN_BACKLOG      1
 
 /* ---- Statistics options ---------------- */
