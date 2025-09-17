@@ -315,8 +315,13 @@ PACK_STRUCT_END
 #if TCP_MSS >= ((16 * 1024) - 1)
 #error "lwip_sanity_check: WARNING: TCP_MSS must be <= 16382 to prevent u16_t underflow in TCP_SNDLOWAT calculation!"
 #endif
-#if TCP_SNDLOWAT >= (0xFFFF - (4 * TCP_MSS))
-#error "lwip_sanity_check: WARNING: TCP_SNDLOWAT must at least be 4*MSS below u16_t overflow!"
+#if LWIP_WND_SCALE
+#define LWIP__TCP_SNDBUF_MAX 0xFFFFFFFFUL
+#else
+#define LWIP__TCP_SNDBUF_MAX 0xFFFFUL
+#endif
+#if (TCP_SNDLOWAT >= (LWIP__TCP_SNDBUF_MAX - (4UL * TCP_MSS)))
+#error "lwip_sanity_check: WARNING: TCP_SNDLOWAT must be at least 4*MSS below max snd_buf!"
 #endif
 #if TCP_SNDQUEUELOWAT >= TCP_SND_QUEUELEN
 #error "lwip_sanity_check: WARNING: TCP_SNDQUEUELOWAT must be less than TCP_SND_QUEUELEN. If you know what you are doing, define LWIP_DISABLE_TCP_SANITY_CHECKS to 1 to disable this error."
