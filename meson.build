@@ -35,9 +35,12 @@ conf_data.set10('LWIP_IPV6', get_option('ipv6').allowed())
 conf_data.set10('LWIP_DNS', get_option('dns').allowed())
 conf_data.set10('LWIP_ARP', get_option('arp').allowed())
 conf_data.set10('LWIP_ETHERNET', get_option('ethernet').allowed())
+conf_data.set('TCP_WND', get_option('tcp_wnd'))
 conf_data.set('TCP_MSS', get_option('tcp_mss'))
 conf_data.set('TCP_SND_BUF', get_option('tcp_snd_buf'))
-conf_data.set('TCP_WND', get_option('tcp_wnd'))
+conf_data.set('TCP_SNDLOWAT', get_option('tcp_sndlowat'))
+conf_data.set('TCP_SND_QUEUELEN', get_option('tcp_snd_queuelen'))
+conf_data.set('TCP_SNDQUEUELOWAT', get_option('tcp_sndqueuelowat'))
 
 configure_file(
   input: 'lwipopts.h.meson.in',
