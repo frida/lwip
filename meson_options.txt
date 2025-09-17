@@ -34,26 +34,38 @@ option('ethernet',
   description: 'Enable Ethernet support',
 )
 
+option('tcp_wnd',
+  type: 'integer',
+  value: 4194304,
+  description: 'TCP window size',
+)
+
 option('tcp_mss',
   type: 'integer',
-  min: 88,
-  max: 16382,
-  value: 1024,
+  value: 16000,
   description: 'TCP Maximum Segment Size',
 )
 
 option('tcp_snd_buf',
   type: 'integer',
-  min: 176,
-  max: 65535,
-  value: 2048,
+  value: 4194304,
   description: 'TCP sender buffer space (bytes)',
 )
 
-option('tcp_wnd',
+option('tcp_sndlowat',
   type: 'integer',
-  min: 176,
-  max: 65535,
-  value: 20480,
-  description: 'TCP window size',
+  value: 1048576,
+  description: 'TCP writable space (bytes)',
+)
+
+option('tcp_snd_queuelen',
+  type: 'integer',
+  value: 1050,
+  description: 'TCP sender buffer space (pbufs)',
+)
+
+option('tcp_sndqueuelowat',
+  type: 'integer',
+  value: 32,
+  description: 'TCP writable bufs (pbuf count)',
 )

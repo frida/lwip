@@ -59,9 +59,12 @@
 #define PPP_SUPPORT             0
 
 /* ---- TCP options ----------------------- */
+#mesondefine TCP_WND
 #mesondefine TCP_MSS
 #mesondefine TCP_SND_BUF
-#mesondefine TCP_WND
+#mesondefine TCP_SNDLOWAT
+#mesondefine TCP_SND_QUEUELEN
+#mesondefine TCP_SNDQUEUELOWAT
 #define LWIP_WND_SCALE          1
 #define TCP_RCV_SCALE           7
 #define LWIP_TCP_TIMESTAMPS     1
