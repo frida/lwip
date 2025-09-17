@@ -1,6 +1,6 @@
 [wrap-git]
 url = https://github.com/frida/glib.git
-revision = 7415481a2beef79a0c16d1ed7d971dbcc605cd81
+revision = 617f4e73e045689d3feb93e46b93c7b9f49cecaf
 depth = 1
 
 [provide]
