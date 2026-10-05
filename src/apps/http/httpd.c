@@ -120,7 +120,6 @@
 #define CRLF "\r\n"
 #if LWIP_HTTPD_SUPPORT_11_KEEPALIVE
 #define HTTP11_CONNECTIONKEEPALIVE  "Connection: keep-alive"
-#define HTTP11_CONNECTIONKEEPALIVE2 "Connection: Keep-Alive"
 #endif
 
 #if LWIP_HTTPD_DYNAMIC_FILE_READ
@@ -2100,8 +2099,7 @@ http_parse_request(struct pbuf *inp, struct http_state *hs, struct altcp_pcb *pc
 #if LWIP_HTTPD_SUPPORT_11_KEEPALIVE
           /* This is HTTP/1.0 compatible: for strict 1.1, a connection
              would always be persistent unless "close" was specified. */
-          if (!is_09 && (lwip_strnistr(data, HTTP11_CONNECTIONKEEPALIVE, data_len) ||
-                         lwip_strnistr(data, HTTP11_CONNECTIONKEEPALIVE2, data_len))) {
+          if (!is_09 && lwip_strnistr(data, HTTP11_CONNECTIONKEEPALIVE, data_len)) {
             hs->keepalive = 1;
           } else {
             hs->keepalive = 0;
@@ -2133,7 +2131,29 @@ http_parse_request(struct pbuf *inp, struct http_state *hs, struct altcp_pcb *pc
           } else
 #endif /* LWIP_HTTPD_SUPPORT_POST */
           {
-            return http_find_file(hs, uri, is_09);
+            err_t err;
+#if LWIP_HTTPD_HEADERS_BEFORE_FILE_OPEN
+            void *obj;
+            char replace_uri[LWIP_HTTPD_HEADERS_URI_REPLACE_LEN + 1];
+            replace_uri[0] = 0;
+            obj = httpd_headers_before_file_open(crlf + 2, (uint16_t)(data_len - (crlf + 2 - data)),
+                                                uri, replace_uri,
+                                                LWIP_HTTPD_HEADERS_URI_REPLACE_LEN);
+            if (replace_uri[0] != 0) {
+              uri = replace_uri;
+            }
+#endif /* LWIP_HTTPD_HEADERS_BEFORE_FILE_OPEN */
+            err = http_find_file(hs, uri, is_09);
+#if LWIP_HTTPD_HEADERS_AFTER_FILE_OPEN
+            if (err == ERR_OK) {
+              httpd_headers_after_file_open(hs->handle, crlf + 2, (uint16_t)(data_len - (crlf + 2 - data))
+#if LWIP_HTTPD_HEADERS_BEFORE_FILE_OPEN
+                                             , obj
+#endif /* LWIP_HTTPD_HEADERS_BEFORE_FILE_OPEN */
+                                            );
+            }
+#endif /* LWIP_HTTPD_HEADERS_AFTER_FILE_OPEN */
+            return err;
           }
         }
       } else {

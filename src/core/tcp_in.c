@@ -1904,6 +1904,10 @@ static u8_t
 tcp_get_next_optbyte(void)
 {
   u16_t optidx = tcp_optidx++;
+  if (optidx >= tcphdr_optlen) {
+    /* Return 0 for any excess reads (like length fields) */
+    return LWIP_TCP_OPT_EOL;
+  }
   if ((tcphdr_opt2 == NULL) || (optidx < tcphdr_opt1len)) {
     u8_t *opts = (u8_t *)tcphdr + TCP_HLEN;
     return opts[optidx];
@@ -1993,17 +1997,17 @@ tcp_parseopt(struct tcp_pcb *pcb)
             return;
           }
           /* TCP timestamp option with valid length */
-          tsval = tcp_get_next_optbyte();
-          tsval |= (tcp_get_next_optbyte() << 8);
+          tsval = (tcp_get_next_optbyte() << 24);
           tsval |= (tcp_get_next_optbyte() << 16);
-          tsval |= (tcp_get_next_optbyte() << 24);
+          tsval |= (tcp_get_next_optbyte() << 8);
+          tsval |= tcp_get_next_optbyte();
           if (flags & TCP_SYN) {
-            pcb->ts_recent = lwip_ntohl(tsval);
+            pcb->ts_recent = tsval;
             /* Enable sending timestamps in every segment now that we know
                the remote host supports it. */
             tcp_set_flags(pcb, TF_TIMESTAMP);
           } else if (TCP_SEQ_BETWEEN(pcb->ts_lastacksent, seqno, seqno + tcplen)) {
-            pcb->ts_recent = lwip_ntohl(tsval);
+            pcb->ts_recent = tsval;
           }
           /* Advance to next option (6 bytes already read) */
           tcp_optidx += LWIP_TCP_OPT_LEN_TS - 6;

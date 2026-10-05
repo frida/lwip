@@ -328,7 +328,6 @@ snmp_receive(void *handle, struct pbuf *p, const ip_addr_t *source_ip, u16_t por
         struct snmp_varbind vb;
 
         vb.next = NULL;
-        vb.prev = NULL;
         vb.type = SNMP_ASN1_TYPE_COUNTER32;
         vb.value_len = sizeof(u32_t);
 
@@ -947,9 +946,9 @@ snmp_parse_inbound_frame(struct snmp_request *request)
     inbound_msgAuthenticationParameters_offset = pbuf_stream.offset;
     LWIP_UNUSED_ARG(inbound_msgAuthenticationParameters_offset);
     /* Read auth parameters */
-    /* IF_PARSE_ASSERT(tlv.value_len <= SNMP_V3_MAX_AUTH_PARAM_LENGTH); */
+    IF_PARSE_ASSERT(tlv.value_len <= SNMP_V3_MAX_AUTH_PARAM_LENGTH);
     IF_PARSE_EXEC(snmp_asn1_dec_raw(&pbuf_stream, tlv.value_len, request->msg_authentication_parameters,
-                                    &u16_value, tlv.value_len));
+                                    &u16_value, SNMP_V3_MAX_AUTH_PARAM_LENGTH));
     request->msg_authentication_parameters_len = (u8_t)u16_value;
 
     /* msgPrivacyParameters */
@@ -1058,7 +1057,7 @@ snmp_parse_inbound_frame(struct snmp_request *request)
       IF_PARSE_EXEC(snmpv3_get_user((char *)request->msg_user_name, &auth, key, NULL, NULL));
       IF_PARSE_EXEC(snmpv3_auth(&auth_stream, request->inbound_pbuf->tot_len, key, auth, hmac));
 
-      if (memcmp(request->msg_authentication_parameters, hmac, SNMP_V3_MAX_AUTH_PARAM_LENGTH)) {
+      if (lwip_memcmp_consttime(request->msg_authentication_parameters, hmac, SNMP_V3_MAX_AUTH_PARAM_LENGTH)) {
         snmp_stats.wrongdigests++;
         request->msg_flags = SNMP_V3_NOAUTHNOPRIV;
         request->error_status = SNMP_ERR_AUTHORIZATIONERROR;
